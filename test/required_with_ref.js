@@ -160,10 +160,6 @@ describe('required with $ref', function () {
 				payment.usage = null;
 				assertNotValid(data)
 			})
-			it('""', function () {
-				payment.usage = '';
-				assertNotValid(data)
-			})
 			it('256 chars', function () {
 				payment.usage =
 					 "bbbbbbbbbbqqqqqqqqqqbbbbbbbbbbqqqqqqqqqqbbbbbbbbbbqqqqqqqqqqbbbbbbbbbbqqqqqqqqqqbbbbbbbbbbqqqqqqqqqq"
