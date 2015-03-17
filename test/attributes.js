@@ -212,6 +212,14 @@ describe('Attributes', function () {
     it('should validate if string does not match the string pattern', function () {
       return this.validator.validate('abac', {'type': 'string', 'pattern': 'ab+c'}).valid.should.be.false;
     });
+
+    it('should validate if string matches the string pattern zero', function () {
+      return this.validator.validate(0, {'type': 'number', 'pattern': '[0-9]'}).valid.should.be.true;
+    });
+
+    it('should validate if null string', function () {
+      return this.validator.validate(null, {'type': 'string', 'pattern': 'ab+c'}).valid.should.be.false;
+    });
   });
 
   describe('minLength', function () {
@@ -226,6 +234,14 @@ describe('Attributes', function () {
     it('should not validate if string does has a length less than minLength', function () {
       return this.validator.validate('abcde', {'type': 'string', 'minLength': 6}).valid.should.be.false;
     });
+
+    it('should validate if string is a zero and the minLength is 1', function () {
+      return this.validator.validate(0, {'type': 'number', 'minLength': 1}).valid.should.be.true;
+    });
+
+    it('should not validate if string is null', function () {
+      return this.validator.validate(null, {'type': 'string', 'minLength': 6}).valid.should.be.false;
+    });
   });
 
   describe('maxLength', function () {
@@ -239,6 +255,14 @@ describe('Attributes', function () {
 
     it('should not validate if string does has a length larger than maxLength', function () {
       return this.validator.validate('abcde', {'type': 'string', 'maxLength': 4}).valid.should.be.false;
+    });
+
+    it('should validate if string is a zero and the maxLength is 0', function () {
+      return this.validator.validate(0, {'type': 'number', 'maxLength': 0}).valid.should.be.false;
+    });
+
+    it('should not validate if string is null', function () {
+      return this.validator.validate(null, {'type': 'string', 'maxLength': 6}).valid.should.be.false;
     });
   });
 
@@ -271,7 +295,7 @@ describe('Attributes', function () {
       return this.validator.validate(undefined, {'enum': ['foo', 'bar', 'baz'], 'required': true, 'default': 'baz'}).valid.should.be.false;
     });
 
-    it('should not validate if a required field is ommited', function () {
+    it('should not validate if a required field is omitted', function () {
       return this.validator.validate({}, {'type': 'object', 'properties':{'the_field': {'enum': ['foo', 'bar', 'baz'], 'required': true}}}).valid.should.be.false;
     });
 
@@ -281,6 +305,10 @@ describe('Attributes', function () {
 
     it('should validate if a required field has a value out of enum', function () {
       return this.validator.validate({'the_field':'bar'}, {'type': 'object', 'properties':{'the_field': {'enum': ['foo', 'bar', 'baz'], 'required': true}}}).valid.should.be.true;
+    });
+
+    it('should not validate if instance is null', function () {
+      return this.validator.validate(null, {'type': 'string', 'enum': [1, 2]}).valid.should.be.false;
     });
   });
 
@@ -325,4 +353,36 @@ describe('Attributes', function () {
       this.validator.validate({quux: 1, foo: 1, bar: 1}, {'dependencies': {'quux': ['foo', 'bar']}}).valid.should.be.true;
     });
   });
+
+  describe('format', function () {
+    beforeEach(function () {
+      this.validator = new Validator();
+      this.validator.addFormat('integer-positive', /^[0-9]+$/);
+      this.validator.addFormat('alphanumeric', /^[a-zA-Z0-9]+$/);
+    });
+
+    it('should validate 1 as valid with integer-positive format', function () {
+      return this.validator.validate(1, {'format': 'integer-positive'}, {}, {'propertyPath': 'apath'}).valid.should.be.true;
+    });
+
+    it('should validate 0 as valid with integer-positive format', function () {
+      return this.validator.validate(0, {'format': 'integer-positive'}, {}, {'propertyPath': 'apath'}).valid.should.be.true;
+    });
+
+    it('should validate 2.1 as invalid with integer-positive format', function () {
+      return this.validator.validate(2.1, {'format': 'integer-positive'}, {}, {'propertyPath': 'apath'}).valid.should.be.false;
+    });
+
+    it('should validate somename as valid with alphanumeric format', function () {
+      return this.validator.validate('somename', {'format': 'alphanumeric'}, {}, {'propertyPath': 'apath'}).valid.should.be.true;
+    });
+
+    it('should validate null as valid with integer-positive format', function () {
+      return this.validator.validate(null, {'format': 'integer-positive'}, {}, {'propertyPath': 'apath'}).valid.should.be.true;
+    });
+
+    it('should validate null as valid with alpha-numeric format', function () {
+      return this.validator.validate(null, {'format': 'alphanumeric'}, {}, {'propertyPath': 'apath'}).valid.should.be.true;
+    });
+  })
 });
