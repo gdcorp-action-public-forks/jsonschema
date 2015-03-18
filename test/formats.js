@@ -274,7 +274,7 @@ describe('Formats', function () {
     });
 
     it('should not validate empty', function () {
-      var result = this.validator.validate("", {'type': 'string', 'format': 'non-empty'});
+      var result = this.validator.validate("", {'type': 'string', 'format': 'non-empty', required: true});
       result.valid.should.be.false;
       result.errors[0].message.should.equal('must not be empty');
     });
@@ -283,4 +283,119 @@ describe('Formats', function () {
       this.validator.validate(1, {'type': 'string', 'format': 'non-empty'}).valid.should.be.false;
     });
   });
+
+  describe('given required:false with format', function() {
+      describe('when instance is an empty string', function () {
+        it('should validate', function () {
+          this.validator.validate(
+            {'prop1': ''},
+            {
+              'type': 'object',
+              'properties': {
+                'prop1': {
+                  'type': 'string',
+                  'required': false,
+                  'format': 'date-time'
+                }
+              }
+            }
+          ).valid.should.be.true;
+        });
+      });
+
+      describe('when instance is not an empty string and does not conform to format', function () {
+        it('should not validate', function () {
+          this.validator.validate(
+            {'prop1': '123'},
+            {
+              'type': 'object',
+              'properties': {
+                'prop1': {
+                  'type': 'string',
+                  'required': false,
+                  'format': 'date-time'
+                }
+              }
+            }
+          ).valid.should.be.false;
+        });
+      });
+    }
+  );
+
+  describe('given required:true with format', function() {
+      describe('when instance is an empty string', function () {
+        it('should not validate', function () {
+          this.validator.validate(
+            {'prop1': ''},
+            {
+              'type': 'object',
+              'properties': {
+                'prop1': {
+                  'type': 'string',
+                  'required': true,
+                  'format': 'date-time'
+                }
+              }
+            }
+          ).valid.should.be.false;
+        });
+      });
+
+      describe('when instance is not an empty string and does not conform to format', function(){
+        it('should not validate', function(){
+          this.validator.validate(
+            {'prop1': '123'},
+            {
+              'type': 'object',
+              'properties': {
+                'prop1': {
+                  'type': 'string',
+                  'required': true,
+                  'format': 'date-time'
+                }
+              }
+            }
+          ).valid.should.be.false;
+        })
+      });
+    }
+  );
+
+  describe('given no required attribute with format', function(){
+      describe('when instance is an empty string', function () {
+        it('should validate', function () {
+          this.validator.validate(
+            {'prop1': ''},
+            {
+              'type': 'object',
+              'properties': {
+                'prop1': {
+                  'type': 'string',
+                  'format': 'date-time'
+                }
+              }
+            }
+          ).valid.should.be.true;
+        });
+      });
+
+      describe('when instance is not an empty string and does not conform to format', function () {
+        it('should not validate', function () {
+          this.validator.validate(
+            {'prop1': '123'},
+            {
+              'type': 'object',
+              'properties': {
+                'prop1': {
+                  'type': 'string',
+                  'format': 'date-time'
+                }
+              }
+            }
+          ).valid.should.be.false;
+        });
+      });
+    }
+  );
 });
