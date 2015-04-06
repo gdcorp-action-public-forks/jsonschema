@@ -7,6 +7,7 @@ var util = require('util')
 var fs = require('fs')
 var assert = require('chai').assert
 var Validator = require('../lib/validator')
+var expect = require('chai').expect;
 
 /**
 * sort of functional test for "extends" and "required"
@@ -48,6 +49,34 @@ describe('required with $ref', function () {
 		it('with wrong root node schould not be valid', function(){
 			assertNotValid({wrong_root:payment})
 		})
+    it('should have chained property path', function(){
+      var schema1 = {
+        id:'http://json-schema.org#',
+        properties:{
+          prop1: {
+            $ref: 'http://json-schema.org#/definitions/Prop1'
+          }
+        },
+        definitions:{
+          Prop1: {
+            properties:{
+              prop2: {
+                type: 'string'
+              }
+            },
+            required:['prop2']
+          }
+        }
+      };
+      var validator1 = new Validator();
+      validator1.addSchema(schema1, schema1.id);
+      validator1.addSchema(schema1.definitions.Prop1, 'http://json-schema.org/#/definitions/Prop1');
+      var result = validator1.validate({prop1: {}}, schema1);
+      expect(result.errors).to.exist;
+      expect(result.errors).to.be.an('array');
+      expect(result.errors.length).to.equal(1);
+      expect(result.errors[0].property).to.equal('prop1.prop2');
+    })
 	})
 
 	describe('required positive integer (amount)', function() {
