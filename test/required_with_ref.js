@@ -7,7 +7,6 @@ var util = require('util')
 var fs = require('fs')
 var assert = require('chai').assert
 var Validator = require('../lib/validator')
-var expect = require('chai').expect;
 
 /**
 * sort of functional test for "extends" and "required"
@@ -72,10 +71,10 @@ describe('required with $ref', function () {
       validator1.addSchema(schema1, schema1.id);
       validator1.addSchema(schema1.definitions.Prop1, 'http://json-schema.org/#/definitions/Prop1');
       var result = validator1.validate({prop1: {}}, schema1);
-      expect(result.errors).to.exist;
-      expect(result.errors).to.be.an('array');
-      expect(result.errors.length).to.equal(1);
-      expect(result.errors[0].property).to.equal('prop1.prop2');
+      assert(result.errors);
+      assert(Array.isArray(result.errors));
+      assert(result.errors.length === 1);
+      assert(result.errors[0].property === 'prop1.prop2');
     })
 	})
 
