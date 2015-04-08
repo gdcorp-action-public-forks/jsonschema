@@ -48,34 +48,34 @@ describe('required with $ref', function () {
 		it('with wrong root node schould not be valid', function(){
 			assertNotValid({wrong_root:payment})
 		})
-    it('should have chained property path', function(){
-      var schema1 = {
-        id:'http://json-schema.org#',
-        properties:{
-          prop1: {
-            $ref: 'http://json-schema.org#/definitions/Prop1'
-          }
-        },
-        definitions:{
-          Prop1: {
-            properties:{
-              prop2: {
-                type: 'string'
-              }
-            },
-            required:['prop2']
-          }
-        }
-      };
-      var validator1 = new Validator();
-      validator1.addSchema(schema1, schema1.id);
-      validator1.addSchema(schema1.definitions.Prop1, 'http://json-schema.org/#/definitions/Prop1');
-      var result = validator1.validate({prop1: {}}, schema1);
-      assert(result.errors);
-      assert(Array.isArray(result.errors));
-      assert(result.errors.length === 1);
-      assert(result.errors[0].property === 'prop1.prop2');
-    })
+		it('should have chained property path', function () {
+			var schema1 = {
+				id: 'http://json-schema.org#',
+				properties: {
+					prop1: {
+						$ref: 'http://json-schema.org#/definitions/Prop1'
+					}
+				},
+				definitions: {
+					Prop1: {
+						properties: {
+							prop2: {
+								type: 'string'
+							}
+						},
+						required: ['prop2']
+					}
+				}
+			};
+			var validator1 = new Validator();
+			validator1.addSchema(schema1, schema1.id);
+			validator1.addSchema(schema1.definitions.Prop1, 'http://json-schema.org/#/definitions/Prop1');
+			var result = validator1.validate({prop1: {}}, schema1);
+			assert(result.errors);
+			assert(Array.isArray(result.errors));
+			assert(result.errors.length === 1);
+			assert(result.errors[0].property === 'prop1.prop2');
+		});
 	})
 
 	describe('required positive integer (amount)', function() {
