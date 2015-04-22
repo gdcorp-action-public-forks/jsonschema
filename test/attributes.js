@@ -533,4 +533,50 @@ describe('Attributes', function () {
       });
     });
   });
+
+  describe('not', function(){
+    beforeEach(function () {
+      this.validator = new Validator();
+    });
+
+    describe('when not type has required', function(){
+      var schema = {
+        not:{
+          required: ['prop1']
+        }
+      };
+
+      it('should return error with meaningful messsage', function(){
+        var instance = {
+          prop1: 'something'
+        };
+        var result = this.validator.validate(instance, schema);
+        result.errors.should.be.an('array');
+        result.errors.length.should.equal(1);
+        result.errors[0].property.should.equal('prop1');
+        result.errors[0].message.should.equal('can not be present');
+      });
+    });
+
+    describe('when not type does not have required', function(){
+      var schema = {
+        properties: {
+          prop1: {
+            not: {
+              type: 'string'
+            }
+          }
+        }
+      };
+
+      it('should return error with generic error message', function(){
+        var instance = {prop1: 'something'};
+        var result = this.validator.validate(instance, schema);
+        result.errors.should.be.an('array');
+        result.errors.length.should.equal(1);
+        result.errors[0].property.should.equal('prop1');
+        result.errors[0].message.should.equal('is of prohibited type [object Object]');
+      });
+    });
+  });
 });
