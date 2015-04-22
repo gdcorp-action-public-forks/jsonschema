@@ -571,10 +571,10 @@ describe('Attributes', function () {
 
       it('should return error with generic error message', function(){
         var instance = {prop1: 'something'};
-        var result = this.validator.validate(instance, schema);
+        var result = this.validator.validate(instance, schema, {propertyName: 'body'});
         result.errors.should.be.an('array');
         result.errors.length.should.equal(1);
-        result.errors[0].property.should.equal('prop1');
+        result.errors[0].property.should.equal('body.prop1');
         result.errors[0].message.should.equal('is of prohibited type [object Object]');
       });
     });
