@@ -533,7 +533,7 @@ describe('Attributes', function () {
       });
     });
 
-    describe('when there are no subschemas with nodependencies', function(){
+    describe('when there are no subschemas with dependencies', function(){
       var schema = {
         oneOf:[
           {
@@ -554,7 +554,7 @@ describe('Attributes', function () {
       };
 
       describe('when instance is invalid', function(){
-        it('should return generic error message', function(){
+        it('should return specific error messages', function(){
           var instance = {
             prop1: '5',
             prop2: {}
@@ -604,7 +604,7 @@ describe('Attributes', function () {
     };
 
     describe('when instance is invalid', function(){
-      it('should return generic error message', function(){
+      it('should return specific error messages', function(){
         var instance = {
           prop1: '5',
           prop2: {}
