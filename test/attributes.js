@@ -532,7 +532,102 @@ describe('Attributes', function () {
         })
       });
     });
+
+    describe('when there are no subschemas with dependencies', function(){
+      var schema = {
+        oneOf:[
+          {
+            properties:{
+              prop1:{
+                enum: ['1','2']
+              }
+            }
+          },
+          {
+            properties:{
+              prop1:{
+                enum:['3','4']
+              }
+            }
+          }
+        ]
+      };
+
+      describe('when instance is invalid', function(){
+        it('should return specific error messages', function(){
+          var instance = {
+            prop1: '5',
+            prop2: {}
+          };
+          var result = this.validator.validate(instance, schema);
+          result.errors.should.be.an('array');
+          result.errors.length.should.equal(2);
+          result.errors[0].message.should.equal('is not one of enum values: 1,2');
+          result.errors[1].message.should.equal('is not one of enum values: 3,4');
+        });
+      });
+
+      describe('when instance is valid', function(){
+        it('should not return error', function(){
+          var instance = {
+            prop1: '1',
+            prop2: {prop3:'something'}
+          };
+          this.validator.validate(instance, schema).valid.should.be.true;
+        })
+      });
+    });
   });
+
+  describe('anyOf', function() {
+    beforeEach(function () {
+      this.validator = new Validator();
+    });
+
+    var schema = {
+      anyOf:[
+        {
+          properties:{
+            prop1:{
+              enum: ['1','2']
+            }
+          }
+        },
+        {
+          properties:{
+            prop1:{
+              enum:['2','3']
+            }
+          }
+        }
+      ]
+    };
+
+    describe('when instance is invalid', function(){
+      it('should return specific error messages', function(){
+        var instance = {
+          prop1: '5',
+          prop2: {}
+        };
+        var result = this.validator.validate(instance, schema);
+        result.errors.should.be.an('array');
+        result.errors.length.should.equal(2);
+        result.errors[0].message.should.equal('is not one of enum values: 1,2');
+        result.errors[1].message.should.equal('is not one of enum values: 2,3');
+      });
+    });
+
+    describe('when instance is valid', function(){
+      it('should not return error', function(){
+        var instance = {
+          prop1: '2',
+          prop2: {prop3:'something'}
+        };
+        this.validator.validate(instance, schema).valid.should.be.true;
+      })
+    });
+  });
+
 
   describe('not', function(){
     beforeEach(function () {
