@@ -14,7 +14,7 @@ describe('Attributes', function () {
 
     describe('number', function () {
       it('should validate a valid number', function () {
-        this.validator.validate(0, {'type': 'number'}).valid.should.be.true;
+        this.validator.validate(0, {'type': 'number', 'required': true}).valid.should.be.true;
       });
 
       it('should not validate an invalid number', function () {
