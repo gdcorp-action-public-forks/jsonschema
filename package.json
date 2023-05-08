@@ -23,7 +23,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/tdegrunt/jsonschema.git"
+    "url": "git://github.com/gdcorp-action-public-forks/jsonschema.git"
   },
   "description": "A fast and easy to use JSON Schema validator",
   "scripts": {
