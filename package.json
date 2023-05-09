@@ -27,7 +27,6 @@
   },
   "description": "A fast and easy to use JSON Schema validator",
   "scripts": {
-    "submoduleUpdate": "git submodule update --init --recursive && git submodule foreach git pull origin master",
     "test": "./node_modules/.bin/mocha -R spec"
   }
 }
